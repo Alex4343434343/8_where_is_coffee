@@ -7,6 +7,7 @@ from geopy import distance
 
 NUMBER_OF_CAFE = 5
 
+
 def fetch_coordinates(apikey, address):
     base_url = "https://geocode-maps.yandex.ru/1.x"
     response = requests.get(base_url, params={
@@ -62,7 +63,10 @@ def main():
             'longitude': longitude
         })
 
-    nearest_cafe = sorted(new_file_contents, key=get_the_distance)[:NUMBER_OF_CAFE]
+    nearest_cafe = sorted(
+        new_file_contents,
+        key=get_the_distance
+    )[:NUMBER_OF_CAFE]
 
     m = folium.Map(your_coordinates, zoom_start=24)
 
