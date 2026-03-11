@@ -4,11 +4,8 @@ import folium
 import os
 from dotenv import load_dotenv
 from geopy import distance
-from pprint import pprint
 
-load_dotenv()
-APIKEY = os.getenv('APIKEY')
-
+NUMBER_OF_CAFE = 5
 
 def fetch_coordinates(apikey, address):
     base_url = "https://geocode-maps.yandex.ru/1.x"
@@ -36,17 +33,18 @@ def get_the_distance(spacing):
 
 def main():
 
+    load_dotenv()
+    api_key = os.getenv('APIKEY')
+
     with open('files/coffee.json', 'r', encoding='CP1251') as my_file:
         file_contents_str = my_file.read()
 
     file_contents = json.loads(file_contents_str)
 
     your_place = input('Где Вы находитесь? ')
-    your_coordinates = fetch_coordinates(APIKEY, your_place)
-
-    print('Ваши координаты:', your_coordinates)
-
+    your_coordinates = fetch_coordinates(api_key, your_place)
     your_coordinates = (float(your_coordinates[1]), float(your_coordinates[0]))
+
     new_file_contents = []
 
     for cafe in file_contents:
@@ -64,9 +62,7 @@ def main():
             'longitude': longitude
         })
 
-    nearest_cafe = sorted(new_file_contents, key=get_the_distance)[:5]
-
-    pprint(nearest_cafe, sort_dicts=False)
+    nearest_cafe = sorted(new_file_contents, key=get_the_distance)[:NUMBER_OF_CAFE]
 
     m = folium.Map(your_coordinates, zoom_start=24)
 
@@ -80,7 +76,7 @@ def main():
         ),
     ).add_to(m)
 
-    for i in range(5):
+    for i in range(NUMBER_OF_CAFE):
 
         folium.Marker(
             location=[
@@ -99,7 +95,7 @@ def main():
 
     trail_coordinates = []
 
-    for i in range(5):
+    for i in range(NUMBER_OF_CAFE):
 
         trail_coordinates.append([
             your_coordinates,
